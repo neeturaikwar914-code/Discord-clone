@@ -1,1 +1,116 @@
-f
+:root {
+  --neon-cyan: #00f2ff;
+  --neon-purple: #bc13fe;
+  --dark-deep: #050507;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at top right, #1a1a2e, var(--dark-deep));
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-container {
+  width: 90%;
+  max-width: 1000px;
+  text-align: center;
+}
+
+/* Typography */
+h1.neon-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 5px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+h1.neon-text span {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 20px var(--neon-cyan);
+}
+
+/* Glass Card */
+.upload-box, .loader-container, .mixer-container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 50px;
+  border-radius: 30px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+/* Futuristic Buttons */
+.btn-neon {
+  background: transparent;
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 15px 40px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  margin-top: 20px;
+}
+
+.btn-neon:hover {
+  background: var(--neon-cyan);
+  color: #000;
+  box-shadow: 0 0 30px var(--neon-cyan);
+  transform: translateY(-3px);
+}
+
+/* Real-time Progress Bar */
+.progress-wrapper {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  box-shadow: 0 0 15px var(--neon-cyan);
+}
+
+/* Mixer Animations */
+.fade-in {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; text-shadow: 0 0 10px var(--neon-cyan); }
+  100% { opacity: 0.5; }
+}
