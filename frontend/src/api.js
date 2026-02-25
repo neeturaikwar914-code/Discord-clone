@@ -1,8 +1,26 @@
 import axios from "axios";
 
+const API_BASE = "https://kri-lion.onrender.com";
+
 const API = axios.create({
-  // Replace the placeholder with your actual Render backend URL
-  baseURL: "https://kri-lion.onrender.com"
+  baseURL: API_BASE,
 });
+
+export const startAudioJob = async (file, onUploadProgress) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  
+  return API.post("/upload", formData, {
+    onUploadProgress: (progressEvent) => {
+      const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      onUploadProgress(percent);
+    },
+  });
+};
+
+export const checkJobStatus = async (jobId) => {
+  const response = await API.get(`/status/${jobId}`);
+  return response.data;
+};
 
 export default API;
