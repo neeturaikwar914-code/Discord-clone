@@ -4,8 +4,8 @@ python-multipart==0.0.6
 boto3==1.34.0
 librosa==0.10.1
 soundfile==0.12.1
-# The AI Engine
 demucs==4.0.1
-torch==2.1.2
-torchaudio==2.1.2
-numpy==1.26.3
+# Let Render pick the best version for Python 3.14
+torch
+torchaudio
+numpy
