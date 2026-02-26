@@ -1,10 +1,18 @@
 import os
-import json
+from fastapi import UploadFile
 
-RESULTS_FOLDER = os.path.join(os.getcwd(), "results")
-os.makedirs(RESULTS_FOLDER, exist_ok=True)
+UPLOAD_DIR = "backend/uploads"
+PROCESSED_DIR = os.path.join(UPLOAD_DIR, "processed")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(PROCESSED_DIR, exist_ok=True)
 
-def save_result(filename: str, data: dict):
-    file_path = os.path.join(RESULTS_FOLDER, f"{filename}.json")
-    with open(file_path, "w") as f:
-        json.dump(data, f)
+def save_upload(file: UploadFile) -> str:
+    """Save uploaded file to uploads/"""
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+    return file_path
+
+def list_processed_files():
+    """Return list of processed files"""
+    return os.listdir(PROCESSED_DIR)
