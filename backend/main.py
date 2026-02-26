@@ -1,31 +1,70 @@
-from fastapi import FastAPI, UploadFile, File, BackgroundTasks
+# backend/main.py
+
+import os
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from backend.ai_engine import process_audio
-from backend.storage import save_upload, list_processed_files
+from fastapi.staticfiles import StaticFiles
+from storage import save_upload, list_uploads
+from ai_engine import extract_stems, apply_effect
 
-app = FastAPI(title="Kri-AI Audio 2.0")
+UPLOAD_DIR = "backend/uploads"
 
-# Allow frontend to access backend
+app = FastAPI(title="Kri AI Audio Backend 2.0")
+
+# CORS (IMPORTANT for frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # production me frontend URL dal sakte ho
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
+# Serve uploaded files
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
+
+@app.get("/")
+def root():
+    return {"message": "Kri AI Audio Backend Running 🚀"}
+
+
+# Upload Endpoint
 @app.post("/upload")
-async def upload_audio(file: UploadFile = File(...), bg: BackgroundTasks = None):
-    """Upload audio & start AI processing in background"""
-    file_path = save_upload(file)
-    bg.add_task(process_audio, file_path)
-    return {"message": "Audio uploaded, processing started", "file_path": file_path}
+async def upload_audio(file: UploadFile = File(...)):
+    file_id, filename = await save_upload(file)
+    return {
+        "file_id": file_id,
+        "filename": filename,
+        "url": f"/uploads/{file_id}/{filename}"
+    }
 
-@app.get("/history")
-async def get_history():
-    """Return list of processed audio files"""
-    files = list_processed_files()
-    return {"processed_files": files}
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+# List Uploads
+@app.get("/uploads")
+def get_uploads():
+    return list_uploads()
+
+
+# Extract Stems
+@app.post("/extract_stems")
+def stem_extraction(data: dict):
+    file_id = data.get("file_id")
+    if not file_id:
+        raise HTTPException(status_code=400, detail="file_id required")
+
+    result = extract_stems(file_id)
+    return result
+
+
+# Apply Audio Effect
+@app.post("/apply_effect")
+def effect_audio(data: dict):
+    file_id = data.get("file_id")
+    effect = data.get("effect")
+
+    if not file_id or not effect:
+        raise HTTPException(status_code=400, detail="file_id and effect required")
+
+    result = apply_effect(file_id, effect)
+    return result
