@@ -1,3 +1,4 @@
+# render.yaml - Single service backend + frontend
 services:
   - type: web
     name: kri-ai-single
