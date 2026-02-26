@@ -1,23 +1,60 @@
 import os
 from pydub import AudioSegment
-from spleeter.separator import Separator
 
-PROCESSED_DIR = "backend/uploads/processed"
-os.makedirs(PROCESSED_DIR, exist_ok=True)
+UPLOAD_DIR = "backend/uploads"
 
-# Spleeter AI model - 2 stems (vocals + accompaniment)
-separator = Separator('spleeter:2stems')
 
-def process_audio(file_path: str):
-    """Separate vocals & instruments and save processed files"""
-    base_name = os.path.basename(file_path)
-    output_path = os.path.join(PROCESSED_DIR, base_name.replace(".", "_processed."))
+def get_file_path(file_id):
+    folder = os.path.join(UPLOAD_DIR, file_id)
+    files = os.listdir(folder)
+    return os.path.join(folder, files[0])
 
-    # Spleeter separation
-    separator.separate_to_file(file_path, PROCESSED_DIR)
 
-    # Optional: apply audio FX with pydub (reverb/echo/bass)
-    audio = AudioSegment.from_file(file_path)
-    audio = audio + 3  # simple volume boost
-    audio.export(output_path, format="mp3")
-    print(f"Processed {file_path} -> {output_path}")
+# DEMO Stem Extraction (Mock Split)
+def extract_stems(file_id):
+    original_path = get_file_path(file_id)
+    folder = os.path.dirname(original_path)
+
+    audio = AudioSegment.from_file(original_path)
+
+    # Fake split (real demucs integrate later)
+    vocals = audio - 3
+    drums = audio + 2
+    bass = audio.low_pass_filter(200)
+    other = audio.high_pass_filter(200)
+
+    stems = {
+        "vocals": save_stem(vocals, folder, "vocals.wav", file_id),
+        "drums": save_stem(drums, folder, "drums.wav", file_id),
+        "bass": save_stem(bass, folder, "bass.wav", file_id),
+        "other": save_stem(other, folder, "other.wav", file_id),
+    }
+
+    return stems
+
+
+def apply_effect(file_id, effect):
+    original_path = get_file_path(file_id)
+    folder = os.path.dirname(original_path)
+
+    audio = AudioSegment.from_file(original_path)
+
+    if effect == "reverb":
+        processed = audio + 6
+    elif effect == "echo":
+        processed = audio.overlay(audio, delay=200)
+    elif effect == "bassboost":
+        processed = audio.low_pass_filter(150)
+    else:
+        processed = audio
+
+    output_path = os.path.join(folder, "processed.wav")
+    processed.export(output_path, format="wav")
+
+    return {"processed_file": f"/uploads/{file_id}/processed.wav"}
+
+
+def save_stem(audio, folder, name, file_id):
+    path = os.path.join(folder, name)
+    audio.export(path, format="wav")
+    return f"/uploads/{file_id}/{name}"
