@@ -1,8 +1,6 @@
 {
-  "name": "kri-ai-audio-pro",
-  "private": true,
-  "version": "2.0.0",
-  "type": "module",
+  "name": "kri-ai-frontend",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,15 +8,10 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "axios": "^1.6.0",
-    "wavesurfer.js": "^7.7.0",
-    "lucide-react": "^0.292.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^4.2.0",
-    "vite": "^5.0.0"
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.4.21"
   }
 }
