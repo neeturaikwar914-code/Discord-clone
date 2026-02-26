@@ -67,4 +67,4 @@ def effect_audio(data: dict):
         raise HTTPException(status_code=400, detail="file_id and effect required")
 
     result = apply_effect(file_id, effect)
-    return result
+    return result 
